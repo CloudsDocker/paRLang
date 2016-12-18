@@ -15,5 +15,7 @@ freqwl<-function(wl){
   return(wl[order(freqs)])
 }
 
-thedata=findwords("~/dev/git/paRLang/raw.txt")
-freqData=freqwl(thedata)
+thedata<-findwords("~/dev/git/paRLang/raw.txt")
+freqData<-freqwl(thedata)
+lthData<-length(freqData)
+barplot(freqData[round(0.9*lthData):lthData])
