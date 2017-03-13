@@ -1,0 +1,39 @@
+ g<-read.csv("C:/Users/33333/Projects/GCAD/DataAnalysis/CH23_20170309_182424 C&A CN.csv")
+ 
+ # check the type of column Date
+ # class(g$Trade.Date) 
+ # convert column to date, Y means 4 digits
+ g$Trade.Date <- as.Date(g$Trade.Date, "%d/%m/%Y")
+ g_sub <- g[g$Trade.Date > as.Date("2016-12-01")]
+ g_sub<-subset(g,g$Trade.Date>as.Date("2016-12-01"))
+ g_sub<-subset(g,g$Trade.Date>=as.Date("2016-12-01") & g$Trade.Date<=as.Date("2016-12-31") )
+ # Testing record
+ gT <- g[grepl("FWD163559948",g$Common.Trade.ID),]
+ # get number or rows
+ nrow(g_sub)
+g_cnl<-g_sub[grepl("Cancel",g_sub$Amd.Cnl),]
+ nrow(g_cnl)
+# [1] 708
+
+ gmo<-read.csv("C:/Users/33333/Projects/GCAD/DataAnalysis/TRADE AMENDMENT AND CANCELLATION REPORT-(20DEC16-28FEB17).csv")
+ # using as.characeter, because class(gmo$Deal.Date) is integer
+ gmo$Deal.Date<-as.Date(as.character(gmo$Deal.Date),"%Y%m%d")
+ gmo_sub<-subset(gmo,gmo$Deal.Date>=as.Date("2016-12-01") & gmo$Deal.Date<=as.Date("2016-12-31"))
+ gmo_cnl<-gmo_sub[grepl("CNL",gmo_sub$Deal.Status),]
+ nrow(gmo_cnl)
+ # [1] 1031
+
+
+# only exist in GMO side
+ only_in_gmo_cnl<-gmo_cnl[!(gmo_cnl$Deal.Number %in% g_cnl$Common.Trade.ID),]
+ nrow(only_in_gmo_cnl)
+ # [1] 407
+ 
+ write.csv(only_in_gmo_cnl, "C:/Users/33333/Projects/GCAD/DataAnalysis/only_in_gmo_cnl.csv")
+ 
+# only exist at CGAD side 
+  only_in_gcad_cnl<-g_cnl[!(g_cnl$Common.Trade.ID %in% gmo_cnl$Deal.Number),]
+ nrow(only_in_gcad_cnl)
+ # [1] 407
+ 
+ write.csv(only_in_gcad_cnl, "C:/Users/33333/Projects/GCAD/DataAnalysis/only_in_gcad_cnl.csv")
